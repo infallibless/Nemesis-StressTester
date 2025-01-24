@@ -149,7 +149,7 @@ async function openb(targeturl, browserp) {
     }
 }
 
-async function startThread(targeturl, browserp, task, done, retries = 0) {
+async function startt(targeturl, browserp, task, done, retries = 0) {
     if (retries === COOKIES_MAX_RETRIES) {
         const currentTask = queue.length();
         done(null, { task, currentTask });
@@ -159,7 +159,7 @@ async function startThread(targeturl, browserp, task, done, retries = 0) {
             if (response) {
                 if (response.title === "just a moment...") {
                     console.log("nemesis solve -> " + browserp + " - Bypass failed ! ");
-                    await startThread(targeturl, browserp, task, done, COOKIES_MAX_RETRIES);
+                    await startt(targeturl, browserp, task, done, COOKIES_MAX_RETRIES);
                     return;
                 }
                
@@ -176,17 +176,17 @@ async function startThread(targeturl, browserp, task, done, retries = 0) {
                     response.useragent
                 ]);
             }
-            await startThread(targeturl, browserp, task, done, COOKIES_MAX_RETRIES);
+            await startt(targeturl, browserp, task, done, COOKIES_MAX_RETRIES);
         } catch (error) {
             colored(colors.COLOR_RED, error.message);
-            await startThread(targeturl, browserp, task, done, COOKIES_MAX_RETRIES);
+            await startt(targeturl, browserp, task, done, COOKIES_MAX_RETRIES);
         }
     }
 }
 
 
 const queue = async.queue(function (task, done) {
-    startThread(targeturl, task.browserp, task, done);
+    startt(targeturl, task.browserp, task, done);
 }, threads);
 
 async function main() {
